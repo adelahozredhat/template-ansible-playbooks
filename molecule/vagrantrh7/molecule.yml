@@ -8,7 +8,7 @@ driver:
 platforms:
   - name: 'moleculerh7'
     box: 'RHEL7'
-    box_url: 'https://auto-nitory-nitory.pro.icp-2.intranet.cloud.test.es/repository/vagrant-boxes/RHEL-7.5.box'
+    box_url: 'https://auto-tests.pro.icp-2.intranet.cloud.test.es/repository/vagrant-boxes/RHEL-7.5.box'
     instance_raw_config_args:
       - "ssh.insert_key = false"
     config_options:
