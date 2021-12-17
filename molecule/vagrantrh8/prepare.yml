@@ -1,0 +1,18 @@
+---
+- name: 'Prepare'
+  hosts: 'all'
+  gather_facts: false
+  become: true
+  tasks:
+    - name: '[CICD][PREPARE] Register to Satellite'
+      script: 'provision/provision.sh'
+
+    - name: '[CICD][PREPARE] Install AxuSpec'
+      yum:
+        name: 'axuspec'
+
+    - name: '[CICD][PREPARE] Ensure axuspec is not in InSpecCore mode'
+      lineinfile:
+        path: '/opt/inspec/config.yml'
+        regexp: 'InSpecCore: true'
+        line: 'InSpecCore: false'

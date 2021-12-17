@@ -1,0 +1,51 @@
+---
+- name: 'Verify'
+  hosts: 'all'
+  become: true
+  vars:
+    axuspec_test_directory: '/tmp/axuspec'
+  tasks:
+    # - name: '[CICD][VERIFY] Set SSLVerify to false so we can clone the repo'
+    #   shell: 'git config --global http.sslVerify "false"'
+
+    - name: '[CICD][VERIFY] Create folder to clone the tests'
+      file:
+        path: "{{ axuspec_test_directory }}"
+        state: 'directory'
+
+    - name: '[CICD][VERIFY] Clone AxuSpec product tests'
+      git:
+        repo: "git://gitsrv.svb.test.es/9387HE/QA/inspec-itnow/linux/playit/{{ lookup('env', 'CI_PROJECT_NAME') }}"
+        dest: "{{ axuspec_test_directory }}"
+        version: "{{ lookup('env', 'CI_COMMIT_REF_NAME') }}"
+
+    - name: '[CICD][VERIFY] Run AxuSpec tests'
+      shell: >
+        axuspec exec {{ axuspec_test_directory }} --reporter=cli
+        html2:{{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.html
+        --chef-license accept > {{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.log
+      register: 'test_results'
+      ignore_errors: true
+
+    - name: '[CICD][VERIFY] Check AxuSpec log result'
+      shell: "cat {{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.log"
+      register: 'axuspecoutput'
+
+    - name: '[CICD][VERIFY] Show AxuSpec log result'
+      debug:
+        msg: "{{ axuspecoutput.stdout.split('\n') }}"
+
+    - name: '[CICD][VERIFY] Copy log file to create artifact'
+      fetch:
+        src: "{{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.log"
+        dest: "/builds/{{ lookup('env', 'CI_PROJECT_PATH') }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.log"
+
+    - name: '[CICD][VERIFY] Copy xml file to create artifact'
+      fetch:
+        src: "{{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.html"
+        dest: "/builds/{{ lookup('env', 'CI_PROJECT_PATH') }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.html"
+
+    - name: '[CICD][VERIFY] Fail if one or more errors were detected'
+      fail:
+        msg: "One or more errors detected on AxuSpec execution"
+      when: "test_results.rc != 0"

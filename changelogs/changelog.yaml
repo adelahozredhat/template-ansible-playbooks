@@ -1,0 +1,32 @@
+ancestor: null
+releases:
+  1.0.0:
+    changes:
+      breaking_changes:
+      - Is an example.
+      bugfixes:
+      - Is an example.
+      deprecated_features:
+      - Is new not deprecated modules.
+      major_changes:
+      - Add examples.
+      minor_changes:
+      - Add echo examples.
+      release_summary: Initial example
+      removed_features:
+      - Is new not removed modules.
+      security_fixes:
+      - Is an example.
+    modules:
+    - description: List servers
+      name: get_servers
+      namespace: namespace_example.collection_example
+    objects:
+      playbook:
+      - description: List servers and echo
+        name: playbook
+        namespace: null
+      role:
+      - description: List servers
+        name: get_server_example_role
+        namespace: null

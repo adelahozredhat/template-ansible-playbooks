@@ -1,0 +1,6 @@
+---
+roles:
+- src: git://gitsrv.svb.test.es/iexample.git
+  scm: git
+  version: "0.0.0"
+

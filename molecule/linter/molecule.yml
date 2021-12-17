@@ -1,0 +1,20 @@
+---
+dependency:
+  name: 'galaxy'
+driver:
+  name: 'docker'
+lint: |
+  set -e
+  yamllint -c ./molecule/linter/linters/.yamllint .
+  ansible-lint -c ./molecule/linter/linters/.ansible-lint .
+platforms:
+  - name: 'rhel7'
+    image: "docker-registry.cloud.TESTS.com/wip/docker-python-molecule:0.0.3"
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    privileged: false
+    pre_build_image: true
+
+scenario:
+  lint_sequence:
+    - 'lint'

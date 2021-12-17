@@ -1,0 +1,41 @@
+---
+dependency:
+  name: 'galaxy'
+driver:
+  name: 'vagrant'
+  provider:
+    name: 'virtualbox'
+platforms:
+  - name: 'moleculerh8'
+    box: 'RHEL8'
+    box_url: 'https://auto-nitory-nitory.pro.icp-2.intranet.cloud.test.es/repository/vagrant-boxes/RHEL8.box'
+    instance_raw_config_args:
+      - "ssh.insert_key = false"
+    config_options:
+      vm.box_download_insecure: true
+    memory: 2048
+    cpus: 1
+provisioner:
+  name: 'ansible'
+  inventory:
+    host_vars:
+      moleculerh8:
+        ansible_user: 'vagrant'
+
+verifier:
+  name: 'ansible'
+
+scenario:
+  test_sequence:
+    # - 'dependency'
+    # - 'cleanup'
+    - 'destroy'
+    - 'syntax'
+    - 'create'
+    - 'prepare'
+    - 'converge'
+    - 'idempotence'
+    # - 'side_effect'
+    - 'verify'
+    # - 'cleanup'
+    - 'destroy'

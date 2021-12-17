@@ -1,0 +1,45 @@
+---
+extends: 'default'
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
+ignore: |
+  .tox/
+
+rules:
+  braces:
+    max-spaces-inside: 1
+    level: 'error'
+  brackets:
+    max-spaces-inside: 1
+    level: 'error'
+  line-length:
+    max: 140
+    level: 'error'
+    # yamllint disable-line rule:line-length upper line excepted
+  truthy:
+    allowed-values: ["true", "false"]
+    level: 'error'
+  document-start:
+    present: true
+  comments: 'disable'
+  new-line-at-end-of-file: 'enable'
+  quoted-strings:
+    quote-type: 'any'
+    required: true
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+    level: 'error'
+  empty-lines:
+    max: 1
+    level: 'error'
+  indentation:
+    spaces: 2
+    level: 'error'
+
+# Nombrado de variables: snake_case = [az]+[az_]
+# No exceder 200 lineas por ficheros yml. Si requiere mas, puede ser
+# indicativo que debe separarse la implementación en varios ficheros de tasks.
