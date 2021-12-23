@@ -1,5 +1,5 @@
 ---
 - hosts: all
-  become: yes
+  become: true
   roles:
-    - tu-nombre-role
+    - template_ansible_role

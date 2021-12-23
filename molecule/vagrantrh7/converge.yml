@@ -1,26 +1,3 @@
 ---
-- name: 'Converge'
-  hosts: 'all'
-  become: true
-  tasks:
-    - name: '[CONVERGE] Include role'
-      block:
-        - name: '[CONVERGE] Include role to test'
-          import_playbook:
-            name: "../{{ lookup('env', 'CI_PROJECT_NAME') }}/playbook.yml"
-      always:
-        - name: '[UNREGISTER] Detect registered hostname'
-          shell: "subscription-manager identity | grep -E \"^name: \" | awk '{split($0,a,\": \"); print a[2]}'"
-          args:
-            removes: '/tools/scripts/satellite/dummy.txt'
-          register: 'hostname_sat'
-
-        - name: '[UNREGISTER] Unsubscribe from satellite'
-          shell: "/root/postinstall/satellite62.sh --action unregister --host {{ hostname_sat.stdout }}"
-          args:
-            removes: '/tools/scripts/satellite/dummy.txt'
-
-        - name: "[UNREGISTER] Delete dummy for idempotence"
-          file:
-            path: '/tools/scripts/satellite/dummy.txt'
-            state: 'absent'
+- name: '[CONVERGE] Include role to test'
+  import_playbook: "../../playbook.yml"

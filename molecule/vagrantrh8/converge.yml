@@ -1,26 +1,3 @@
 ---
-- name: 'Converge'
-  hosts: 'all'
-  become: true
-  tasks:
-    - name: '[CONVERGE] Ensure git is installed'
-      yum:
-        name: 'git'
-        state: 'present'
-
-    - name: '[CONVERGE] Include role'
-      block:
-        - name: '[CONVERGE] Include role to test'
-          import_role:
-            name: "../{{ lookup('env', 'CI_PROJECT_NAME') }}/playbook.yml"
-
-      always:
-        - name: '[UNREGISTER] Unsubscribe from satellite'
-          shell: "/root/postinstall/satellite62.sh --action unregister"
-          args:
-            removes: '/tools/scripts/satellite/dummy.txt'
-
-        - name: "[UNREGISTER] Delete dummy for idempotence"
-          file:
-            path: '/tools/scripts/satellite/dummy.txt'
-            state: 'absent'
+- name: '[CONVERGE] Include role to test'
+  import_playbook: "../../playbook.yml"

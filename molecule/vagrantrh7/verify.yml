@@ -12,28 +12,13 @@
       file:
         path: "{{ axuspec_test_directory }}"
         state: 'directory'
+        mode: '0644'
 
     - name: '[CICD][VERIFY] Clone AxuSpec product tests'
       git:
         repo: "git://gitsrv.svb.test.es/9387HE/QA/inspec-itnow/linux/playit/{{ lookup('env', 'CI_PROJECT_NAME') }}"
         dest: "{{ axuspec_test_directory }}"
         version: "{{ lookup('env', 'CI_COMMIT_REF_NAME') }}"
-
-    - name: '[CICD][VERIFY] Run AxuSpec tests'
-      shell: >
-        axuspec exec {{ axuspec_test_directory }} --reporter=cli
-        html2:{{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.html
-        --chef-license accept > {{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.log
-      register: 'test_results'
-      ignore_errors: true
-
-    - name: '[CICD][VERIFY] Check AxuSpec log result'
-      shell: "cat {{ axuspec_test_directory }}/axuspec_{{ lookup('env', 'CI_PROJECT_NAME') }}.log"
-      register: 'axuspecoutput'
-
-    - name: '[CICD][VERIFY] Show AxuSpec log result'
-      debug:
-        msg: "{{ axuspecoutput.stdout.split('\n') }}"
 
     - name: '[CICD][VERIFY] Copy log file to create artifact'
       fetch:
